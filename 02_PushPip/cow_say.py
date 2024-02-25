@@ -1,6 +1,7 @@
 import argparse
 from cowsay import cowsay, Option, list_cows
 
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-e", dest='eye_string', default=Option.eyes)
@@ -19,3 +20,11 @@ parser.add_argument('-s', action='store_true', help='С языком в стор
 parser.add_argument('-t', action='store_true', help='С трубой (-t)')
 parser.add_argument('-w', action='store_true', help='С волнами (-w)')
 parser.add_argument('-y', action='store_true', help='С лапкой (-y)')
+
+
+args = parser.parse_args()
+
+ops = ''
+for op in 'bdgpstwy':
+    if getattr(args, op):
+        ops += f'{op}'

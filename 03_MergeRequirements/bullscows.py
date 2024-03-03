@@ -6,6 +6,9 @@ import cowsay
 
 word_len = 5
 
+def my_cow(prompt):
+    return(random.choice([f'/-_-\\ - *working*\n{prompt}', f'\\^_^/ - *watching anime*\n{prompt}']))
+
 
 def bullscows(guess: str, secret: str) -> (int, int):
     s = set(secret)
@@ -23,10 +26,11 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
-    print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
-
+    #print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
+    print(my_cow(prompt))
     while (inp := input()) not in valid or len(inp) != word_len:
-        print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
+        print(my_cow(prompt))
+        #print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
 
     return inp
 

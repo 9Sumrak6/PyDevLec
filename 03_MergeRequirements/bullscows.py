@@ -3,6 +3,9 @@ import sys
 import urllib.request
 
 
+word_len = 5
+
+
 def bullscows(guess: str, secret: str) -> (int, int):
     s = set(secret)
 
@@ -19,7 +22,7 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
-    while (inp := input(prompt)) not in valid:
+    while (inp := input(prompt)) not in valid or len(inp) != word_len:
         pass
 
     return inp
@@ -30,11 +33,13 @@ def inform(format_string: str, bulls: int, cows: int) -> None:
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
-    secret = random.choice(words)
+    secret = ''
+
+    while (secret := random.choice(words)) and len(secret) != word_len:
+        pass
+
     guess = ''
     tries = 0
-
-    print(secret)
 
     while guess != secret:
         bulls, cows = 0, 0
@@ -48,4 +53,21 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     return tries
 
 
-print(gameplay(ask, inform, ['lala', 'lalala', 'la', 'lalalalala', 'lalalalalalalala']))
+if __name__ == "__main__":
+    if len(sys.argv) not in [2, 3]:
+        print("usage: python -m bullscows <dict_path> <word_len>")
+        sys.exit(0)
+
+    if len(sys.argv) == 3:
+        word_len = int(sys.argv[2])
+
+    dict_path = sys.argv[1]
+
+    try:
+        with urllib.request.urlopen(dict_path) as f:
+            word_list = f.read().decode().split()
+    except Exception:
+        with open(dict_path) as f:
+            word_list = f.read().split()
+
+    print("Total attempts:", gameplay(ask, inform, word_list))

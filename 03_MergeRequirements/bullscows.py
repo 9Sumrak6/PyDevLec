@@ -1,6 +1,7 @@
 import random
 import sys
 import urllib.request
+import cowsay
 
 
 word_len = 5
@@ -22,14 +23,16 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
-    while (inp := input(prompt)) not in valid or len(inp) != word_len:
-        pass
+    print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
+
+    while (inp := input()) not in valid or len(inp) != word_len:
+        print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
 
     return inp
 
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
-    print(format_string.format(bulls, cows))
+    print(cowsay.cowsay(format_string.format(bulls, cows), cow=cowsay.get_random_cow()))
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
@@ -37,6 +40,8 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
 
     while (secret := random.choice(words)) and len(secret) != word_len:
         pass
+
+    print(secret)
 
     guess = ''
     tries = 0

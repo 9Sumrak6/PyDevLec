@@ -1,8 +1,15 @@
 import shlex
 import cmd
+
 import readline
 import rlcompleter
+
 from cowsay import cowsay, list_cows, make_bubble, cowthink, Option
+
+if 'libedit' in readline.__doc__:
+    readline.parse_and_bind("bind ^I rl_complete")
+else:
+    readline.parse_and_bind("tab: complete")
 
 class Cow_cmd(cmd.Cmd):
     prompt = ':->'
@@ -14,6 +21,19 @@ class Cow_cmd(cmd.Cmd):
 
 
     def do_cowsay(self, args):
+        """
+        Similar to the cowsay command. Parameters are listed with their
+        corresponding options in the cowsay command. Returns the resulting
+        cowsay string
+
+        :param message: The message to be displayed
+        :param cow: -f – the available cows can be found by calling list_cows
+        :param eyes: -e or eye_string
+        :param tongue: -T or tongue_string
+
+        Correct example: cowsay I love MSU -e ^^ -T U
+        Incorrect example: cowsay -e ^^ -T U (there is no message)
+        """
         s_args = shlex.split(args, 0, 0)
 
         if len(args) == 0:
@@ -64,14 +84,34 @@ class Cow_cmd(cmd.Cmd):
 
 
     def do_list_cows(self, args):
+        """
+        Lists all cow file names in the given directory
+        """
         print(*list_cows())
 
 
     def do_make_bubble(self, args):
+        """
+        Wraps text is wrap_text is true, then pads text and sets inside a bubble.
+        This is the text that appears above the cows
+        """
         print(make_bubble(args))
 
 
     def do_cowthink(self, args):
+        """
+        Similar to the cowthink command. Parameters are listed with their
+        corresponding options in the cowthink command. Returns the resulting
+        cowthink string
+
+        :param message: The message to be displayed
+        :param cow: -f – the available cows can be found by calling list_cows
+        :param eyes: -e or eye_string
+        :param tongue: -T or tongue_string
+
+        Correct example: cowsay I love MSU -e ^^ -T U
+        Incorrect example: cowsay -e ^^ -T U (there is no message)
+        """
         s_args = shlex.split(args, 0, 0)
 
         if len(args) == 0:
@@ -120,7 +160,11 @@ class Cow_cmd(cmd.Cmd):
         elif res[-1] == '-T':
             return [c for c in self.tongues if c.startswith(text)]
 
+
     def do_EOF(self, args):
+        """
+        Needs to end the input
+        """
         return True
 
 

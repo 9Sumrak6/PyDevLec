@@ -4,8 +4,15 @@ from cowsay import cowsay, list_cows, make_bubble, cowthink, Option
 
 
 class Cow_cmd(cmd.Cmd):
+    cowsay_params = ['-e', 'eye_string', '-T', 'toungue_string', '-f']
     def do_cowsay(self, args):
-        print(1)
+        s_args = shlex.split(args)
+
+        if len(args) == 0:
+            print("Invalid arguments")
+        elif len(args) == 1:
+            cowsay(s_args[0])
+        else:
 
     def do_list_cows(self, args):
         print(2)

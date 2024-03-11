@@ -52,6 +52,17 @@ class Cow_cmd(cmd.Cmd):
                 print(cowsay(message, cow=cow, eyes=eyes, tongue=tongue))
 
 
+    def complete_cowsay(self, text, line, begidx, endidx):
+        res = shlex.split(line[:begidx], 0, 0)
+
+        if res[-1] == '-e':
+            return [c for c in self.eyes if c.startswith(text)]
+        elif res[-1] == '-f':
+            return [c for c in list_cows() if c.startswith(text)]
+        elif res[-1] == '-T':
+            return [c for c in self.tongues if c.startswith(text)]
+
+
     def do_list_cows(self, args):
         print(*list_cows())
 
@@ -98,6 +109,16 @@ class Cow_cmd(cmd.Cmd):
             else:
                 print(cowthink(message, cow=cow, eyes=eyes, tongue=tongue))
 
+
+    def complete_cowthink(self, text, line, begidx, endidx):
+        res = shlex.split(line[:begidx], 0, 0)
+
+        if res[-1] == '-e':
+            return [c for c in self.eyes if c.startswith(text)]
+        elif res[-1] == '-f':
+            return [c for c in list_cows() if c.startswith(text)]
+        elif res[-1] == '-T':
+            return [c for c in self.tongues if c.startswith(text)]
 
     def do_EOF(self, args):
         return True

@@ -60,6 +60,34 @@ async def chat(reader, writer):
             if q is send:
                 query = q.result().decode().strip().split()
 
+                if len(query) == 0:
+                    writer.write("Command is incorrect.\n".encode())
+                    continue
+                
+                if query[0] == 'login':
+                    writer.write(f'U have already logged in.\n'.encode())
+                elif query[0] == 'yield':
+                    for i in taken_cows:
+                        if i != me:
+                            await clients[i].put(cowsay.cowsay(" ".join(query[1:]), cow=me))
+                elif query[0] == 'say':
+                    if query[1] not in taken_cows:
+                        writer.write('No user under this name.\n'.encode())
+                    else:
+                        await clients[query[1]].put(cowsay.cowsay(" ".join(query[2:]), cow=me))
+                elif query[0] == 'who':
+                    writer.write(f'Taken cows: {taken_cows}\n'.encode())
+                elif query[0] == 'cows':
+                    writer.write(f'Free cows: {free_cows}\n'.encode())
+                elif query[0] == 'quit':
+                    free_cows.add(me)
+                    taken_cows.remove(me)
+                    send.cancel()
+                    receive.cancel()
+                    del clients[me]
+                    writer.close()
+                    return
+
                 send = asyncio.create_task(reader.readline())
             elif q is receive:
                 receive = asyncio.create_task(clients[me].get())

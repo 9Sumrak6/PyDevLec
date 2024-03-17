@@ -50,6 +50,28 @@ async def chat(reader, writer):
         await writer.drain()
 
 
+    send = asyncio.create_task(reader.readline())
+    receive = asyncio.create_task(clients[me].get())
+
+    while not reader.at_eof():
+        done, pending = await asyncio.wait([send, receive], return_when=asyncio.FIRST_COMPLETED)
+
+        for q in done:
+            if q is send:
+                query = q.result().decode().strip().split()
+
+                send = asyncio.create_task(reader.readline())
+            elif q is receive:
+                receive = asyncio.create_task(clients[me].get())
+                writer.write(f"{q.result()}\n".encode())
+                await writer.drain()
+
+    send.cancel()
+    receive.cancel()
+    print(f'{me} Done')
+    del clients[me]
+    writer.close()
+
 async def main():
     server = await asyncio.start_server(chat, '0.0.0.0', 1337)
     async with server:
